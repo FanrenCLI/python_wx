@@ -38,6 +38,14 @@ class Sqlutils():
         result=cur.fetchall()
         cur.close()
         return result
+    def updateSelective(self,tablelist,stuid,openid):
+        self.connection()
+        cur=self.cur
+        sqlstr="update "+tablelist+" set openid=%s where stuid=%s"
+        cur.execute(sqlstr,(openid,stuid))
+        result=cur.fetchall()
+        cur.close()
+        return result
     def insert(self,tablelist,UserModel):
         self.connection()
         cur=self.cur

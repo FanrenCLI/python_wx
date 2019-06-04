@@ -32,15 +32,21 @@ class loginHandler(RequestHandler):
         time.sleep(1)
         # 判断数据库中是否有此用户，若没有则进行以下操作，若有则直接返回用户信息
         Sqlresult=Sqlutils().selectByAccountPwd("userlist",stuid,pwd)
+        flag= checkOpenid(backinfo["openid"])
         if Sqlresult:
-            self.write(str(Sqlresult))
+            if Sqlresult[0][4]!=None:
+                self.write(str(Sqlresult))
+            else:
+                if not flag:
+                    Sqlutils().updateSelective("userlist",stuid,backinfo["openid"])
         else:
-            resultstr=models.globaldata.backmessage['Content'][0:10]
-            reuslt1=resultstr[3:resultstr.rfind(',')]
-            flag= checkOpenid(backinfo["openid"])
+            contain_username_str=models.globaldata.backmessage['Content'][0:10]
+            userName=contain_username_str[3:contain_username_str.rfind(',')]
             if models.globaldata.backmessage['Content'][0:2]=="你好":
                 # 下次写从这里开始
                 if not flag:
-                    AddUserInfo(reuslt1,stuid,pwd,backinfo["openid"])
+                    AddUserInfo(userName,stuid,pwd,backinfo["openid"])
+                else:
+
             else:
                 self.write("failure")
