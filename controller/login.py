@@ -34,15 +34,18 @@ class loginHandler(RequestHandler):
         Sqlresult=Sqlutils().selectByAccountPwd("userlist",stuid,pwd)
         flag= checkOpenid(backinfo["openid"])
         if Sqlresult:
+            # 判断此用户是否绑定微信号，若有则直接返回用户数据，无则判断当前微信号是否已经存在，无则绑定
             if Sqlresult[0][4]!=None:
                 self.write(str(Sqlresult))
             else:
                 if not flag:
                     Sqlutils().updateSelective("userlist",stuid,backinfo["openid"])
         else:
+            # 没有此用户则，判断此账号和密码是否正确，正确则进行添加到数据库
             contain_username_str=models.globaldata.backmessage['Content'][0:10]
             userName=contain_username_str[3:contain_username_str.rfind(',')]
             if models.globaldata.backmessage['Content'][0:2]=="你好":
+                # 判断当前微信号是否存在，
                 if not flag:
                     AddUserInfo(userName,stuid,pwd,backinfo["openid"])
                 else:
