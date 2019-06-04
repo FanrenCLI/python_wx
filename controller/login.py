@@ -43,10 +43,9 @@ class loginHandler(RequestHandler):
             contain_username_str=models.globaldata.backmessage['Content'][0:10]
             userName=contain_username_str[3:contain_username_str.rfind(',')]
             if models.globaldata.backmessage['Content'][0:2]=="你好":
-                # 下次写从这里开始
                 if not flag:
                     AddUserInfo(userName,stuid,pwd,backinfo["openid"])
                 else:
-
+                    AddUserInfo(userName,stuid,pwd,None)
             else:
                 self.write("failure")
