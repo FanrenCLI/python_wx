@@ -1,10 +1,13 @@
 from tornado.web import *
+from os.path import *
 import tornado.ioloop
 import threading
 import time
 import itchat
 import sys
-sys.path.append(r'F:\\python_work\\wx_backstage')
+# 添加系统路径变量
+dirpath=dirname(abspath(__file__))
+sys.path.append(dirpath)
 from controller.login import *
 from controller.grade import *
 import models.globaldata
