@@ -1,5 +1,5 @@
 mps=[]
-backmessage=''
+backmessage={}
 userid="fanrencli"
 pwd="jmzhAs6SySKJ3jSS"
 port=3306

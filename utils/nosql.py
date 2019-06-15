@@ -1,5 +1,6 @@
 import pymongo
 import models.globaldata
+import string
 
 class NosqlUtil():
     def __init__(self):
@@ -33,5 +34,5 @@ class NosqlUtil():
         self.connection()
         self.db=self.client.admin
         coll=self.db[CollectionName]
-        coll.update_one(Condition,Info)
+        coll.update_one(Condition,{"$set":Info})
         self.client.close()

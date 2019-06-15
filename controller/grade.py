@@ -11,7 +11,12 @@ class GradeHandler(RequestHandler):
         argument:{stuid,pwd}
     '''
     def HandleWx2Json(self,handleString):
-        print(handleString)
+        listRes=handleString.split('⊙')[1:]
+        backJson={}
+        for i in listRes:
+            temp=i.split( )
+            backJson[temp[0]]=temp[1]
+        return backJson 
     #添加一个处理get请求方式的方法
     def get(self):
         #参数传递
@@ -28,20 +33,35 @@ class GradeHandler(RequestHandler):
             gradeleve=int('20'+stuid[0:2])
             localYear=int(localtime[0:4])
             Result_Json={}
-            for i in range(gradeleve,localYear+1):
+            for i in range(gradeleve,localYear):
                 itchat.send_msg("CJCX1 "+str(i)+'-'+str(i+1)+'-1', toUserName=models.globaldata.mps[0]['UserName'])
-                Result_Json=dict(self.HandleWx2Json(models.globaldata.backmessage['Content']),**Result_Json) 
+                while True:
+                    if models.globaldata.backmessage['Content'].find(str(i)+'-'+str(i+1)+'-1')!=-1:
+                        Result_Json=dict(self.HandleWx2Json(models.globaldata.backmessage['Content']),**Result_Json) 
+                        break
                 itchat.send_msg("CJCX1 "+str(i)+'-'+str(i+1)+'-2', toUserName=models.globaldata.mps[0]['UserName'])
-                Result_Json=dict(self.HandleWx2Json(models.globaldata.backmessage['Content']),**Result_Json) 
-            NosqlUtil().insert('grade',Result_Json)
+                while True:
+                    if models.globaldata.backmessage['Content'].find(str(i)+'-'+str(i+1)+'-2')!=-1: 
+                        Result_Json=dict(self.HandleWx2Json(models.globaldata.backmessage['Content']),**Result_Json) 
+                        break
+            Result_Json['stuid']=stuid
+            NosqlUtil().insert("grade",Result_Json)
+            del Result_Json["_id"]
         else:
-            Result_Json=sqlGrade
+            Result_Json={}
             #如果大于6月份，则认为是查询第一学期，否则就是第二学期
             if int(localtime[5:7])>6:
-                itchat.send_msg("CJCX1 "+str(int(localtime[0:4])-1)+"-"+localtime[0:4]+"-2", toUserName=models.globaldata.mps[0]['UserName'])
+                itchat.send_msg("CJCX1 "+localtime[0:4]+"-"+str(int(localtime[0:4])+1)+"-1", toUserName=models.globaldata.mps[0]['UserName'])
                 Result_Json=dict(self.HandleWx2Json(models.globaldata.backmessage['Content']),**Result_Json) 
             else:
-                itchat.send_msg("CJCX1 "+localtime[0:4]+"-"+str(int(localtime[0:4])+1)+"-1", toUserName=models.globaldata.mps[0]['UserName'])
-                Result_Json=dict(self.HandleWx2Json(models.globaldata.backmessage['Content']),**Result_Json)
-            NosqlUtil().UpdateByCondition('admin',{'stuid':stuid},Result_Json)
+                itchat.send_msg("CJCX1 "+str(int(localtime[0:4])-1)+"-"+localtime[0:4]+"-2", toUserName=models.globaldata.mps[0]['UserName'])
+                while True:
+                    if models.globaldata.backmessage['Content'].find(str(int(localtime[0:4])-1)+"-"+localtime[0:4]+"-2")!=-1: 
+                        Result_Json=dict(self.HandleWx2Json(models.globaldata.backmessage['Content']),**Result_Json)
+                        break
+            if Result_Json:
+                NosqlUtil().UpdateByCondition("grade",{'stuid':stuid},Result_Json)
+            Result_Json=dict(sqlGrade,**Result_Json)
+            del Result_Json["_id"]
+        del Result_Json["stuid"]
         self.write(Result_Json)

@@ -12,18 +12,18 @@ from controller.login import *
 from controller.grade import *
 import models.globaldata
 #定义处理类型
-# def runbot():
-#     itchat.auto_login(hotReload=True)
-#     models.globaldata.mps = itchat.search_mps(name='南通大学教务学生管理系统')
-#     itchat.run()
+def runbot():
+    itchat.auto_login(hotReload=True)
+    models.globaldata.mps = itchat.search_mps(name='南通大学教务学生管理系统')
+    itchat.run()
 
-# @itchat.msg_register(itchat.content.TEXT, isMpChat=True)
-# def reply_msg(msg):
-#     models.globaldata.backmessage=msg
+@itchat.msg_register(itchat.content.TEXT, isMpChat=True)
+def reply_msg(msg):
+    models.globaldata.backmessage=msg
 
 if __name__ == "__main__":
-    # threading.Thread(target=runbot).start()
-    app = tornado.web.Application([(r'/hello',GradeHandler),
+    threading.Thread(target=runbot).start()
+    app = tornado.web.Application([(r'/grade',GradeHandler),
                                    (r'/login',loginHandler),
                                    (r'/login_wx',loginWxHandler)
                                    ])
