@@ -28,7 +28,7 @@ if __name__ == "__main__":
                                    (r'/login_wx',loginWxHandler)
                                    ])
     #绑定一个监听端口
-    app.listen(8888)
+    app.listen(8080)
     #启动web程序，开始监听端口的连接
     tornado.ioloop.IOLoop.current().start()
 # 成绩查询功能基本完成

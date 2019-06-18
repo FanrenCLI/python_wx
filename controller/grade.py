@@ -37,12 +37,12 @@ class GradeHandler(RequestHandler):
                 itchat.send_msg("CJCX1 "+str(i)+'-'+str(i+1)+'-1', toUserName=models.globaldata.mps[0]['UserName'])
                 while True:
                     if models.globaldata.backmessage['Content'].find(str(i)+'-'+str(i+1)+'-1')!=-1:
-                        Result_Json=dict(self.HandleWx2Json(models.globaldata.backmessage['Content']),**Result_Json) 
+                        Result_Json[str(i)+'-'+str(i+1)+'-1']=self.HandleWx2Json(models.globaldata.backmessage['Content'])
                         break
                 itchat.send_msg("CJCX1 "+str(i)+'-'+str(i+1)+'-2', toUserName=models.globaldata.mps[0]['UserName'])
                 while True:
                     if models.globaldata.backmessage['Content'].find(str(i)+'-'+str(i+1)+'-2')!=-1: 
-                        Result_Json=dict(self.HandleWx2Json(models.globaldata.backmessage['Content']),**Result_Json) 
+                        Result_Json[str(i)+'-'+str(i+1)+'-2']=self.HandleWx2Json(models.globaldata.backmessage['Content'])
                         break
             Result_Json['stuid']=stuid
             NosqlUtil().insert("grade",Result_Json)
@@ -50,14 +50,21 @@ class GradeHandler(RequestHandler):
         else:
             Result_Json={}
             #如果大于6月份，则认为是查询第一学期，否则就是第二学期
-            if int(localtime[5:7])>6:
+            if int(localtime[5:7])>6 and (localtime[0:4]+"-"+str(int(localtime[0:4])+1)+"-1" not in sqlGrade):
                 itchat.send_msg("CJCX1 "+localtime[0:4]+"-"+str(int(localtime[0:4])+1)+"-1", toUserName=models.globaldata.mps[0]['UserName'])
-                Result_Json=dict(self.HandleWx2Json(models.globaldata.backmessage['Content']),**Result_Json) 
-            else:
+                while True:
+                    if models.globaldata.backmessage['Content'].find(localtime[0:4]+"-"+str(int(localtime[0:4])+1)+"-1")!=-1:
+                        temp_Json=self.HandleWx2Json(models.globaldata.backmessage['Content'])
+                        if temp_Json:
+                            Result_Json[localtime[0:4]+"-"+str(int(localtime[0:4])+1)+"-1"]=temp_Json
+                        break
+            elif int(localtime[5:7])<=6 and (str(int(localtime[0:4])-1)+"-"+localtime[0:4]+"-2" not in sqlGrade):
                 itchat.send_msg("CJCX1 "+str(int(localtime[0:4])-1)+"-"+localtime[0:4]+"-2", toUserName=models.globaldata.mps[0]['UserName'])
                 while True:
                     if models.globaldata.backmessage['Content'].find(str(int(localtime[0:4])-1)+"-"+localtime[0:4]+"-2")!=-1: 
-                        Result_Json=dict(self.HandleWx2Json(models.globaldata.backmessage['Content']),**Result_Json)
+                        temp_Json=self.HandleWx2Json(models.globaldata.backmessage['Content'])
+                        if temp_Json:
+                            Result_Json[str(int(localtime[0:4])-1)+"-"+localtime[0:4]+"-2"]=temp_Json
                         break
             if Result_Json:
                 NosqlUtil().UpdateByCondition("grade",{'stuid':stuid},Result_Json)
