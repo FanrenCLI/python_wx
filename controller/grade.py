@@ -24,7 +24,7 @@ class GradeHandler(RequestHandler):
         #查询数据库中是否存在此学号的成绩，用于接下来判断是全查询还是部分查询
         sqlGrade=NosqlUtil().selectByCondition('grade',{"stuid":stuid})
         #首先登录用户
-        itchat.send_msg("DL "+stuid+" "+pwd, toUserName=models.globaldata.mps[0]['UserName'])
+        itchat.send_msg("DL "+stuid+" "+pwd, toUserName=models.globaldata.mps)
         #获取当前系统日期
         localtime=datetime.datetime.now().strftime('%Y-%m-%d')
         #判断数据库中是否存在此用户的相关信息
@@ -34,12 +34,12 @@ class GradeHandler(RequestHandler):
             localYear=int(localtime[0:4])
             Result_Json={}
             for i in range(gradeleve,localYear):
-                itchat.send_msg("CJCX1 "+str(i)+'-'+str(i+1)+'-1', toUserName=models.globaldata.mps[0]['UserName'])
+                itchat.send_msg("CJCX1 "+str(i)+'-'+str(i+1)+'-1', toUserName=models.globaldata.mps)
                 while True:
                     if models.globaldata.backmessage['Content'].find(str(i)+'-'+str(i+1)+'-1')!=-1:
                         Result_Json[str(i)+'-'+str(i+1)+'-1']=self.HandleWx2Json(models.globaldata.backmessage['Content'])
                         break
-                itchat.send_msg("CJCX1 "+str(i)+'-'+str(i+1)+'-2', toUserName=models.globaldata.mps[0]['UserName'])
+                itchat.send_msg("CJCX1 "+str(i)+'-'+str(i+1)+'-2', toUserName=models.globaldata.mps)
                 while True:
                     if models.globaldata.backmessage['Content'].find(str(i)+'-'+str(i+1)+'-2')!=-1: 
                         Result_Json[str(i)+'-'+str(i+1)+'-2']=self.HandleWx2Json(models.globaldata.backmessage['Content'])
@@ -51,7 +51,7 @@ class GradeHandler(RequestHandler):
             Result_Json={}
             #如果大于6月份，则认为是查询第一学期，否则就是第二学期
             if int(localtime[5:7])>6 and (localtime[0:4]+"-"+str(int(localtime[0:4])+1)+"-1" not in sqlGrade):
-                itchat.send_msg("CJCX1 "+localtime[0:4]+"-"+str(int(localtime[0:4])+1)+"-1", toUserName=models.globaldata.mps[0]['UserName'])
+                itchat.send_msg("CJCX1 "+localtime[0:4]+"-"+str(int(localtime[0:4])+1)+"-1", toUserName=models.globaldata.mps)
                 while True:
                     if models.globaldata.backmessage['Content'].find(localtime[0:4]+"-"+str(int(localtime[0:4])+1)+"-1")!=-1:
                         temp_Json=self.HandleWx2Json(models.globaldata.backmessage['Content'])
@@ -59,7 +59,7 @@ class GradeHandler(RequestHandler):
                             Result_Json[localtime[0:4]+"-"+str(int(localtime[0:4])+1)+"-1"]=temp_Json
                         break
             elif int(localtime[5:7])<=6 and (str(int(localtime[0:4])-1)+"-"+localtime[0:4]+"-2" not in sqlGrade):
-                itchat.send_msg("CJCX1 "+str(int(localtime[0:4])-1)+"-"+localtime[0:4]+"-2", toUserName=models.globaldata.mps[0]['UserName'])
+                itchat.send_msg("CJCX1 "+str(int(localtime[0:4])-1)+"-"+localtime[0:4]+"-2", toUserName=models.globaldata.mps)
                 while True:
                     if models.globaldata.backmessage['Content'].find(str(int(localtime[0:4])-1)+"-"+localtime[0:4]+"-2")!=-1: 
                         temp_Json=self.HandleWx2Json(models.globaldata.backmessage['Content'])

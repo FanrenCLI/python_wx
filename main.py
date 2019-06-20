@@ -16,7 +16,6 @@ def runbot():
     itchat.auto_login(hotReload=True)
     models.globaldata.mps = itchat.search_mps(name='南通大学教务学生管理系统')
     itchat.run()
-
 @itchat.msg_register(itchat.content.TEXT, isMpChat=True)
 def reply_msg(msg):
     models.globaldata.backmessage=msg

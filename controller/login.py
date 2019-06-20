@@ -26,7 +26,7 @@ class loginHandler(RequestHandler):
         if stuid=="none" or pwd=="none":
             return "failure"
         backinfo=get_user_info(code)
-        itchat.send_msg("DL "+stuid+" "+pwd, toUserName=models.globaldata.mps[0]['UserName'])
+        itchat.send_msg("DL "+stuid+" "+pwd, toUserName=models.globaldata.mps)
         time.sleep(1)
         # 判断数据库中是否有此用户，若没有则进行以下操作，若有则直接返回用户信息
         Sqlresult=Sqlutils().selectByAccountPwd("userlist",stuid,pwd)
