@@ -2,25 +2,20 @@ import pymysql
 from models.globaldata import *
 from utils.singleton import *
 
-@singleton
 class Sqlutils():
     def __init__(self):
         self.conn=None
         self.cur=None
     def connection(self):
-        if not self.conn:
-            self.conn=pymysql.Connect(host=host,port=port,user=userid,password=pwd,db=db)
+        self.conn=pymysql.Connect(host=host,port=port,user=userid,password=pwd,db=db)
         self.cur=self.conn.cursor()
-    @classmethod
-    def ConnClose(cls):
-        if cls.conn:
-            cls.conn.close()
     def selectAll(self,tablelist):
         self.connection()
         cur=self.cur
         sqlstr="select * from "+tablelist
         result=cur.execute(sqlstr).fetchall()
         cur.close()
+        self.conn.close()
         return result
     def selectByOpenid(self,tablelist,openid):
         self.connection()
@@ -29,6 +24,7 @@ class Sqlutils():
         cur.execute(sqlstr+"%s",(openid))
         result=cur.fetchall()
         cur.close()
+        self.conn.close()
         return result
     def selectByAccountPwd(self,tablelist,stuid,userpwd):
         self.connection()
@@ -37,6 +33,7 @@ class Sqlutils():
         cur.execute(sqlstr+"%s",(stuid))
         result=cur.fetchall()
         cur.close()
+        self.conn.close()
         return result
     def updateSelective(self,tablelist,stuid,openid):
         self.connection()
@@ -45,6 +42,7 @@ class Sqlutils():
         cur.execute(sqlstr,(openid,stuid))
         result=cur.fetchall()
         cur.close()
+        self.conn.close()
         return result
     def insert(self,tablelist,UserModel):
         self.connection()
@@ -52,4 +50,5 @@ class Sqlutils():
         cur.execute("insert into "+tablelist+"(name,stuid,password,openid) values('%s','%s','%s','%s')"%(UserModel.name,UserModel.stuid,UserModel.pwd,UserModel.openid))
         self.conn.commit()
         cur.close()
+        self.conn.close()
         return True

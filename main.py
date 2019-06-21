@@ -14,7 +14,8 @@ import models.globaldata
 #定义处理类型
 def runbot():
     itchat.auto_login(hotReload=True)
-    models.globaldata.mps = itchat.search_mps(name='南通大学教务学生管理系统')
+    models.globaldata.mps = itchat.search_mps(name='南通大学教务学生管理系统')[0]["UserName"]
+    itchat.send_msg("DL 这是测试", toUserName=models.globaldata.mps)
     itchat.run()
 @itchat.msg_register(itchat.content.TEXT, isMpChat=True)
 def reply_msg(msg):
