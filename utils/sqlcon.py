@@ -52,3 +52,22 @@ class Sqlutils():
         cur.close()
         self.conn.close()
         return True
+# 班级课表sql语句
+    def selectByClassName(self,tablelist,classname):
+        self.connection()
+        cur=self.cur
+        sqlstr="select * from "+tablelist+" where bjmc="
+        cur.execute(sqlstr+"%s",(classname))
+        result=cur.fetchall()
+        cur.close()
+        self.conn.close()
+        return result
+    def insertManyinfo(self,tablelist,insertinfo):
+        self.connection()
+        cur=self.cur
+        for i in insertinfo:
+            cur.execute("insert into "+tablelist+"(kcmc,zhouci,xqj,jieci,skdd,bjmc,skjs) values('%s','%s','%s','%s','%s','%s','%s')"%(i['kcmc'],i["zhouci"],i["xqj"],i["jieci"],i["skdd"],i["bjmc"],i["skjs"]))
+            self.conn.commit()
+        cur.close()
+        self.conn.close()
+        return True

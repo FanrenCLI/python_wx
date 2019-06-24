@@ -2,7 +2,6 @@ from tornado.web import *
 import itchat
 import models.globaldata
 from pymongo import *
-import json
 from utils.nosql import *
 import time
 import datetime

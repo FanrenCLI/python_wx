@@ -10,6 +10,7 @@ dirpath=dirname(abspath(__file__))
 sys.path.append(dirpath)
 from controller.login import *
 from controller.grade import *
+from controller.curriculum import *
 import models.globaldata
 #定义处理类型
 def runbot():
@@ -25,7 +26,8 @@ if __name__ == "__main__":
     threading.Thread(target=runbot).start()
     app = tornado.web.Application([(r'/grade',GradeHandler),
                                    (r'/login',loginHandler),
-                                   (r'/login_wx',loginWxHandler)
+                                   (r'/login_wx',loginWxHandler),
+                                   (r'/curr',CurrHandler)
                                    ])
     #绑定一个监听端口
     app.listen(8080)
